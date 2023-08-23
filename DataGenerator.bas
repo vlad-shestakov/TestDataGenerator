@@ -17,7 +17,7 @@ Const DEFAULT_STYLESHEET_NAME = "TestData_to_DMCTestSQL.xsl"
 
 Const DEFAULT_FILE_EXTENSION = ".testclass.sql"
 
-Const DEFAULT_DATA_EXTENSION = ".data.xml"
+Const DEFAULT_DATA_EXTENSION = ".TestData.xml"
 
 Const IS_EXPORT_DATA_EXTTRACT = "1" ' Flag to export intermediate data.xml files (1/0)
 
@@ -635,8 +635,3 @@ Sub AppendLineOffset(ByRef Trg As String, ByRef newString As String)
     Append Trg, "  "
     AppendLine Trg, newString
 End Sub
-
-
-
-
-
