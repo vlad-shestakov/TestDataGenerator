@@ -1,4 +1,3 @@
-Attribute VB_Name = "DataGenerator"
 ' Use this script to generate data from excel file and convert it into test scripts
 ' Procedurtes to run from the UI:
 '
@@ -6,41 +5,56 @@ Attribute VB_Name = "DataGenerator"
 '   Extract data into XML file.
 '   XML file will be saved in the same folder as original Excel file with name <filename>.testdata.xml
 '
-' MakeDateExtractAndTransform
+' MakeDataExtractAndTransform
 '   Extracts data and transforms using the stylesheet
+'
+' FileList_MakeDataExtractAndTransform
+'	Extracts data and transforms using list of stylesheets
+
 '   Default stylesheet name is:
 Const DEFAULT_STYLESHEET_NAME = "TestData_to_DMCTestSQL.xsl"
 '   File will be saved under the same folder with the name <file name>.testclass.sql
 
 Const DEFAULT_FILE_EXTENSION = ".testclass.sql"
 
+Const DEFAULT_DATA_EXTENSION = ".data.xml"
+
+Const IS_EXPORT_DATA_EXTTRACT = "1" ' Flag to export intermediate data.xml files (1/0)
+
 Const MAX_BLANK_LINES_BETWEEN_BLOCKS = 2
 
+'-------------------------------------------------------------------------------
 Sub MakeDataExtract()
     Dim WB As Workbook
     Dim Data As String
+    
+    'MsgBox "MakeDataExtract" '----------
     
     Set WB = Application.ActiveWorkbook
     
     Data = "<?xml version='1.0' encoding='UTF-8'?>"
     
+    AppendLine Data, ""
     AppendLine Data, GetWorkbookData(WB)
     
     ExportFileName = WB.FullName
     
     ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
     
-    ExportFileName = ExportFileName + ".data.xml"
+    ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.data.xml
     
     Open ExportFileName For Output As #1
     Print #1, Data
     Close #1
     
+    'MsgBox "done save - " + ExportFileName '----------
+    
 End Sub
 
+'-------------------------------------------------------------------------------
 Sub MakeDataExtractAndTransformOne()
-    Dim xml As DOMDocument
-    Dim xslt As DOMDocument
+    Dim xml As DOMDocument60
+    Dim xslt As DOMDocument60
     Dim WB As Workbook
     Dim W As Workbook
     Dim Data As String
@@ -49,6 +63,8 @@ Sub MakeDataExtractAndTransformOne()
     Dim N As name
     Dim R As Range
         
+    'MsgBox "MakeDataExtractAndTransformOne" '----------
+    
     Set WB = Application.ActiveWorkbook
     StylesheetName = DEFAULT_STYLESHEET_NAME
     FileExtension = DEFAULT_FILE_EXTENSION
@@ -64,6 +80,8 @@ Sub MakeDataExtractAndTransformOne()
         End If
     End If
     
+    'MsgBox "StylesheetName - " + StylesheetName '----------
+    
     On Error GoTo 0
     
     On Error Resume Next
@@ -77,21 +95,44 @@ Sub MakeDataExtractAndTransformOne()
         End If
     End If
     
+    'MsgBox "FileExtension - " + FileExtension '----------
+    
     On Error GoTo 0
     
     
     Data = "<?xml version='1.0' encoding='UTF-8'?>"
     
+	AppendLine Data, ""
     AppendLine Data, GetWorkbookData(WB)
     
-    Set xml = New DOMDocument
+    '---------------------------------------------------------------------------
+    If IS_EXPORT_DATA_EXTTRACT = "1" Then
+    
+        ExportFileName = WB.FullName
+        
+        ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
+        
+        ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.data.xml
+        
+        Open ExportFileName For Output As #1
+        Print #1, Data
+        Close #1
+        
+        'MsgBox "done save - " + ExportFileName '----------
+        
+    End If
+    '---------------------------------------------------------------------------
+    
+    Set xml = New DOMDocument60
     
     If xml.LoadXML(Data) Then
-        Set xslt = New DOMDocument
+        
+        Set xslt = New DOMDocument60
         
         xsltPath = Application.ThisWorkbook.Path
         
         If xslt.Load(xsltPath + "/" + StylesheetName) Then
+            
             Data = xml.transformNode(xslt)
             
             ExportFileName = WB.FullName
@@ -103,14 +144,19 @@ Sub MakeDataExtractAndTransformOne()
             Open ExportFileName For Output As #1
             Print #1, Data
             Close #1
+            
+            'MsgBox "done save - " + ExportFileName '----------
     
         End If
     End If
     
 End Sub
+
+
+'-------------------------------------------------------------------------------
 Sub MakeDataExtractAndTransform()
-    Dim xml As DOMDocument
-    Dim xslt As DOMDocument
+    Dim xml As DOMDocument60
+    Dim xslt As DOMDocument60
     Dim WB As Workbook
     Dim Opts As Worksheet
     Dim Data As String
@@ -120,6 +166,8 @@ Sub MakeDataExtractAndTransform()
     Dim R As Range
     Dim LO As ListObject
             
+    'MsgBox "MakeDataExtractAndTransform" '----------
+    
     Set WB = Application.ActiveWorkbook
     
     Set Opts = WB.Sheets("Options")
@@ -128,26 +176,90 @@ Sub MakeDataExtractAndTransform()
     
     Set LO = Opts.ListObjects("TransformationOptions")
     
+    '---------------------------------------------------------------------------
+    'If Not (LO Is Nothing) Then
+    '    MsgBox "NOT LO Is Nothing"
+    'Else
+    '    MsgBox "LO Is Nothing"
+    'End If
+    '---------------------------------------------------------------------------
+    
+    
     On Error GoTo 0
    
     If Not (LO Is Nothing) Then
         Data = "<?xml version='1.0' encoding='UTF-8'?>"
         
+        AppendLine Data, ""
         AppendLine Data, GetWorkbookData(WB)
-        
-        Set xml = New DOMDocument
+			
+			
+		'---------------------------------------------------------------------------
+		If IS_EXPORT_DATA_EXTTRACT = "1" Then
+		
+			ExportFileName = WB.FullName
+			
+			ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
+			
+			ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.data.xml
+			
+			Open ExportFileName For Output As #1
+			Print #1, Data
+			Close #1
+			
+			'MsgBox "done save - " + ExportFileName '----------
+			
+		End If
+		'---------------------------------------------------------------------------
+		
+        Set xml = New DOMDocument60
         
         If xml.LoadXML(Data) Then
-            Set xslt = New DOMDocument
+            Set xslt = New DOMDocument60
             
             xsltPath = Application.ThisWorkbook.Path
             
+			
+            'MsgBox "xsltPath - " + xsltPath '----------
+            'MsgBox "LO.ListRows.Count - " + Str(LO.ListRows.Count) '----------
+            
             For idx = 1 To LO.ListRows.Count
+                
+                'MsgBox "idx - " + Str(idx) '----------
                 StylesheetName = LO.ListRows(idx).Range(1)
                 FileExtension = LO.ListRows(idx).Range(2)
-            
+				
+				'---------------------------------------------------------------------------
+				'StylesheetName = DEFAULT_STYLESHEET_NAME
+				'FileExtension = DEFAULT_FILE_EXTENSION
+				'
+                'MsgBox "StylesheetName - " + LO.ListRows(idx).Range(1) '----------
+                'MsgBox "FileExtension - " + LO.ListRows(idx).Range(2) '----------
+                '
+				'
+				'If Not (LO.ListRows(idx).Range(1) Is Nothing) Then
+				'	ssName = LO.ListRows(idx).Range(1).value
+				'	If ssName <> "" Then
+				'		StylesheetName = ssName
+				'	End If
+				'End If
+				'
+				'If Not (LO.ListRows(idx).Range(2) Is Nothing) Then
+				'	ssName = LO.ListRows(idx).Range(2).value
+				'	If ssName <> "" Then
+				'		FileExtension = ssName
+				'	End If
+				'End If
+                '
+                'MsgBox "StylesheetName - " + StylesheetName '----------
+                'MsgBox "FileExtension  - " + FileExtension '----------
+				'---------------------------------------------------------------------------
+				
                 If xslt.Load(xsltPath + "/" + StylesheetName) Then
+				
                     Data = xml.transformNode(xslt)
+                    
+                    'MsgBox "do transformNode - " + xsltPath + "/" + StylesheetName '----------
                     
                     ExportFileName = WB.FullName
                     
@@ -155,10 +267,14 @@ Sub MakeDataExtractAndTransform()
                     
                     ExportFileName = ExportFileName + FileExtension
                     
+                    'MsgBox "ExportFileName - " + ExportFileName '----------
+                    
                     Open ExportFileName For Output As #1
                     Print #1, Data
                     Close #1
-            
+                    
+                    'MsgBox "done save - " + ExportFileName '----------
+				
                 End If
             Next idx
         End If
@@ -168,10 +284,13 @@ Sub MakeDataExtractAndTransform()
 
 End Sub
 
-Sub FileList_MakeDateExtractAndTransform()
+'-------------------------------------------------------------------------------
+Sub FileList_MakeDataExtractAndTransform()
     Dim WB As Workbook
     Dim SList As Worksheet
     Dim aName As String
+    
+    'MsgBox "FileList_MakeDataExtractAndTransform"
     
     Set SList = Application.ActiveWorkbook.ActiveSheet
     
@@ -180,6 +299,7 @@ Sub FileList_MakeDateExtractAndTransform()
     cntTotal = 0
     While SList.Cells(row, 1).value <> "" Or row = 1
         aName = SList.Cells(row, 1).value
+        'MsgBox "aName - " + aName '----------
                 
         On Error Resume Next
         If aName > "" Then
@@ -187,7 +307,7 @@ Sub FileList_MakeDateExtractAndTransform()
             cntTotal = cntTotal + 1
             If Not (WB Is Empty) Then
                 WB.Activate
-                MakeDateExtractAndTransform
+                MakeDataExtractAndTransform
                 WB.Close
                 cnt = cnt + 1
             End If
@@ -199,6 +319,9 @@ Sub FileList_MakeDateExtractAndTransform()
     
     MsgBox Str(cnt) + " out of " + Str(cntTotal) + " tests has been processed"
 End Sub
+
+
+'-------------------------------------------------------------------------------
 Function GetWorkbookData(WB As Workbook) As String
     Dim S As Worksheet
     Dim OptionsWS As Worksheet
@@ -252,6 +375,7 @@ Function GetWorkbookData(WB As Workbook) As String
     
 End Function
 
+'-------------------------------------------------------------------------------
 Function GetSheetData(S As Worksheet) As String
     Dim R As Range
     Dim rowIdx As Integer
@@ -290,6 +414,7 @@ Function GetSheetData(S As Worksheet) As String
     GetSheetData = Data
 End Function
 
+'-------------------------------------------------------------------------------
 Private Sub skipTillBlankLine(ByRef S As Worksheet, ByRef col As Integer, ByRef row As Integer)
     Dim C As Range
     
@@ -298,6 +423,7 @@ Private Sub skipTillBlankLine(ByRef S As Worksheet, ByRef col As Integer, ByRef 
     Wend
 End Sub
 
+'-------------------------------------------------------------------------------
 Private Function skipBlankLine(ByRef S As Worksheet, ByRef col As Integer, ByRef row As Integer, maxLines As Integer) As Integer
     Dim skippedLines As Integer
     skippedLines = 0
@@ -311,6 +437,7 @@ Private Function skipBlankLine(ByRef S As Worksheet, ByRef col As Integer, ByRef
     
 End Function
 
+'-------------------------------------------------------------------------------
 Private Function GetDescriptionData(Start As Range) As String
     Dim S As Worksheet
     Dim DescriptionID As String
@@ -324,6 +451,7 @@ Private Function GetDescriptionData(Start As Range) As String
     GetDescriptionData = getTextElementString(DescriptionID, DescriptionValue)
 End Function
 
+'-------------------------------------------------------------------------------
 Private Function GetBlockData(Start As Range) As String
     Dim S As Worksheet
     Dim Result As String
@@ -350,6 +478,7 @@ Private Function GetBlockData(Start As Range) As String
     GetBlockData = Result
 End Function
 
+'-------------------------------------------------------------------------------
 Private Function GetColumnDescription(Start As Range) As String
     Dim S As Worksheet
     
@@ -398,6 +527,7 @@ Private Function GetColumnDescription(Start As Range) As String
 End Function
 
 
+'-------------------------------------------------------------------------------
 Private Function GetData(Start As Range, parentID As String) As String
     Dim S As Worksheet
     
@@ -444,6 +574,9 @@ Private Function GetData(Start As Range, parentID As String) As String
     Wend
     
 End Function
+
+
+'-------------------------------------------------------------------------------
 Private Function getElementValue(value As String) As String
     Dim badStrings As String
     badstring = "<>?/\&%@"
@@ -466,6 +599,7 @@ Private Function getElementValue(value As String) As String
     
 End Function
 
+'-------------------------------------------------------------------------------
 Private Function getElementString(elementName As String, name As String, value As String) As String
     getElementString = "<" + elementName
     If name <> "" Then
@@ -474,26 +608,35 @@ Private Function getElementString(elementName As String, name As String, value A
     getElementString = getElementString + ">" + getElementValue(value) + "</" + elementName + ">"
 End Function
 
+'-------------------------------------------------------------------------------
 Private Function getTextElementString(elementName As String, value As String) As String
     getTextElementString = getElementString(elementName, "", value)
 End Function
 
+'-------------------------------------------------------------------------------
 Sub Append(ByRef Trg As String, ByRef newString As String)
     Trg = Trg + newString
 End Sub
 
+'-------------------------------------------------------------------------------
 Sub AppendLine(ByRef Trg As String, ByRef newString As String)
     Append Trg, newString
     Append Trg, Chr(10)
 End Sub
 
+'-------------------------------------------------------------------------------
 Sub AppendLineOffsetTab(ByRef Trg As String, ByRef newString As String)
     Append Trg, Chr(9)
     AppendLine Trg, newString
 End Sub
 
+'-------------------------------------------------------------------------------
 Sub AppendLineOffset(ByRef Trg As String, ByRef newString As String)
     Append Trg, "  "
     AppendLine Trg, newString
 End Sub
+
+
+
+
 
