@@ -1,9 +1,12 @@
-<?xml version='1.0' encoding='UTF-8'?><dataset><source-info>
+<?xml version='1.0' encoding='UTF-8'?>
+<dataset><source-info>
 <DatasetName>SampleTestData</DatasetName>
-<FileName>P:\MobileWork\SampleTestData.xlsx</FileName>
-<GeneratedAt>2016-10-09 20:12:03</GeneratedAt>
+<FileName><![CDATA[D:\R_STUDIO\PRG\VBA_projects\TestDataGenerator\SampleTestData.xlsx]]></FileName>
+<GeneratedAt>2023-08-24 04:02:56</GeneratedAt>
 </source-info>
 <options>
+<ouput_file_extenstion>.testclass.sql</ouput_file_extenstion>
+<stylesheet_name>TestData_to_DMCTestSQL.xsl</stylesheet_name>
 </options>
 <data ref='Case1'><Name>Sample data for test preparation</Name>
 <Description>This is a simple test of data preparation for the test scripts</Description>
@@ -15,12 +18,12 @@
 <row id='Type1_1'>
 <Field name='TechName1'>A</Field>
 <Field name='TechName2'>123</Field>
-<Field name='TechName3'>2016-01-01</Field>
+<Field name='TechName3'>01.01.2016</Field>
 </row>
 <row id='Type1_2'>
 <Field name='TechName1'>B</Field>
 <Field name='TechName2'>456</Field>
-<Field name='TechName3'>2016-01-01</Field>
+<Field name='TechName3'>01.01.2016</Field>
 </row>
 
 </MasterRecord>
@@ -32,22 +35,22 @@
 
 <row id='Z1_1'>
 <Field name='REF_MasterRecord'>Type1_1</Field>
-<Field name='ResultDate'>2016-01-04</Field>
+<Field name='ResultDate'>04.01.2016</Field>
 <OtherType name='REVIEW_RESULT'>A</OtherType>
 </row>
 <row id='Z1_2'>
 <Field name='REF_MasterRecord'>Type1_1</Field>
-<Field name='ResultDate'>2016-01-21</Field>
+<Field name='ResultDate'>21.01.2016</Field>
 <OtherType name='REVIEW_RESULT'>B</OtherType>
 </row>
 <row id='Z1_3'>
 <Field name='REF_MasterRecord'>Type1_2</Field>
-<Field name='ResultDate'>2016-01-06</Field>
+<Field name='ResultDate'>06.01.2016</Field>
 <OtherType name='REVIEW_RESULT'>C</OtherType>
 </row>
 <row id='Z1_4'>
 <Field name='REF_MasterRecord'>Type1_2</Field>
-<Field name='ResultDate'>2016-01-11</Field>
+<Field name='ResultDate'>11.01.2016</Field>
 <OtherType name='REVIEW_RESULT'>B</OtherType>
 </row>
 
@@ -61,7 +64,7 @@
 
 <row id='Z2_1'>
 <Field name='REF_MasterRecord'>Type1_2</Field>
-<Field name='ResultDate'>2016-01-11</Field>
+<Field name='ResultDate'>11.01.2016</Field>
 <OtherType name='RESPONSE_RATE'>High</OtherType>
 <OtherType name='TEST_RESULTS'>Passed</OtherType>
 </row>
@@ -75,7 +78,7 @@
 
 <row id='Z3_1'>
 <Field name='REF_MasterRecord'>Type1_1</Field>
-<Field name='ResultDate'>2016-01-21</Field>
+<Field name='ResultDate'>21.01.2016</Field>
 <OtherType name='STUDY_RESULT'>OK</OtherType>
 </row>
 
