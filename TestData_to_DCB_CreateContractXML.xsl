@@ -4,9 +4,17 @@
 	<!-- xmlns:xsl="www.w3.org/1999/XSL/Transform" -->
 	<xsl:template match="/">
 		<CreateContract>
-			<xsl:for-each select="data/e">
-				<xsl:value-of select="@v"/>
-			</xsl:for-each>
+			<TestCase>
+				<DatasetName><xsl:value-of select="//DatasetName"/></DatasetName>
+				<GeneratedAt><xsl:value-of select="//GeneratedAt"/></GeneratedAt>
+			</TestCase>
+			<StudyResults>
+				<xsl:for-each select="dataset/data/StudyResult">
+					<StudyResult>
+						<ResultType><xsl:value-of select="@type"/></ResultType>
+					</StudyResult>
+				</xsl:for-each>
+			</StudyResults>
 		</CreateContract>
 	</xsl:template>
 </xsl:stylesheet>
