@@ -9,7 +9,7 @@
 '   Extracts data and transforms using the stylesheet
 '
 ' FileList_MakeDataExtractAndTransform
-'	Extracts data and transforms using list of stylesheets
+'   Extracts data and transforms using list of stylesheets
 
 '   Default stylesheet name is:
 Const DEFAULT_STYLESHEET_NAME = "TestData_to_DMCTestSQL.xsl"
@@ -41,7 +41,7 @@ Sub MakeDataExtract()
     
     ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
     
-    ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.data.xml
+    ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.TestData.xml
     
     Open ExportFileName For Output As #1
     Print #1, Data
@@ -102,7 +102,7 @@ Sub MakeDataExtractAndTransformOne()
     
     Data = "<?xml version='1.0' encoding='UTF-8'?>"
     
-	AppendLine Data, ""
+    AppendLine Data, ""
     AppendLine Data, GetWorkbookData(WB)
     
     '---------------------------------------------------------------------------
@@ -112,7 +112,7 @@ Sub MakeDataExtractAndTransformOne()
         
         ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
         
-        ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.data.xml
+        ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.TestData.xml
         
         Open ExportFileName For Output As #1
         Print #1, Data
@@ -162,6 +162,7 @@ Sub MakeDataExtractAndTransform()
     Dim Data As String
     Dim StylesheetName As String
     Dim FileExtension As String
+    Dim FileName As String
     Dim N As name
     Dim R As Range
     Dim LO As ListObject
@@ -192,26 +193,26 @@ Sub MakeDataExtractAndTransform()
         
         AppendLine Data, ""
         AppendLine Data, GetWorkbookData(WB)
-			
-			
-		'---------------------------------------------------------------------------
-		If IS_EXPORT_DATA_EXTTRACT = "1" Then
-		
-			ExportFileName = WB.FullName
-			
-			ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
-			
-			ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.data.xml
-			
-			Open ExportFileName For Output As #1
-			Print #1, Data
-			Close #1
-			
-			'MsgBox "done save - " + ExportFileName '----------
-			
-		End If
-		'---------------------------------------------------------------------------
-		
+            
+            
+        '---------------------------------------------------------------------------
+        If IS_EXPORT_DATA_EXTTRACT = "1" Then
+        
+            ExportFileName = WB.FullName
+            
+            ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
+            
+            ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.data.xml
+            
+            Open ExportFileName For Output As #1
+            Print #1, Data
+            Close #1
+            
+            'MsgBox "done save - " + ExportFileName '----------
+            
+        End If
+        '---------------------------------------------------------------------------
+        
         Set xml = New DOMDocument60
         
         If xml.LoadXML(Data) Then
@@ -219,53 +220,49 @@ Sub MakeDataExtractAndTransform()
             
             xsltPath = Application.ThisWorkbook.Path
             
-			
+            
             'MsgBox "xsltPath - " + xsltPath '----------
             'MsgBox "LO.ListRows.Count - " + Str(LO.ListRows.Count) '----------
             
             For idx = 1 To LO.ListRows.Count
                 
                 'MsgBox "idx - " + Str(idx) '----------
-                StylesheetName = LO.ListRows(idx).Range(1)
-                FileExtension = LO.ListRows(idx).Range(2)
+                StylesheetName = LO.ListRows(idx).Range(1) 'Name of XSLT Template
+                FileExtension = LO.ListRows(idx).Range(2) 'Output file extention
 				
-				'---------------------------------------------------------------------------
-				'StylesheetName = DEFAULT_STYLESHEET_NAME
-				'FileExtension = DEFAULT_FILE_EXTENSION
-				'
-                'MsgBox "StylesheetName - " + LO.ListRows(idx).Range(1) '----------
-                'MsgBox "FileExtension - " + LO.ListRows(idx).Range(2) '----------
-                '
-				'
-				'If Not (LO.ListRows(idx).Range(1) Is Nothing) Then
-				'	ssName = LO.ListRows(idx).Range(1).value
-				'	If ssName <> "" Then
-				'		StylesheetName = ssName
-				'	End If
-				'End If
-				'
-				'If Not (LO.ListRows(idx).Range(2) Is Nothing) Then
-				'	ssName = LO.ListRows(idx).Range(2).value
-				'	If ssName <> "" Then
-				'		FileExtension = ssName
-				'	End If
-				'End If
-                '
-                'MsgBox "StylesheetName - " + StylesheetName '----------
-                'MsgBox "FileExtension  - " + FileExtension '----------
-				'---------------------------------------------------------------------------
-				
+                FileName = "" '(Optional) Output Export Path and FileName
+                If Not (LO.ListRows(idx).Range(3) Is Nothing) Then
+                   ssName = LO.ListRows(idx).Range(3).value
+                   If ssName <> "" Then
+                       FileName = ssName
+                   End If
+                End If
+                
                 If xslt.Load(xsltPath + "/" + StylesheetName) Then
-				
+                
                     Data = xml.transformNode(xslt)
                     
                     'MsgBox "do transformNode - " + xsltPath + "/" + StylesheetName '----------
                     
                     ExportFileName = WB.FullName
-                    
-                    ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
-                    
-                    ExportFileName = ExportFileName + FileExtension
+                        
+						
+                    If FileName = "" Then
+                        
+                        'Replace File Extention
+                        
+                        ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
+                        
+                        ExportFileName = ExportFileName + FileExtension
+                        
+                    Else
+                        
+                        'Replace File Name
+                        
+                        ExportFileName = Mid(ExportFileName, 1, InStrRev(ExportFileName, "\"))
+                        ExportFileName = ExportFileName + FileName
+                        
+                    End If
                     
                     'MsgBox "ExportFileName - " + ExportFileName '----------
                     
@@ -274,7 +271,7 @@ Sub MakeDataExtractAndTransform()
                     Close #1
                     
                     'MsgBox "done save - " + ExportFileName '----------
-				
+                
                 End If
             Next idx
         End If
@@ -290,7 +287,6 @@ Sub FileList_MakeDataExtractAndTransform()
     Dim SList As Worksheet
     Dim aName As String
     
-    'MsgBox "FileList_MakeDataExtractAndTransform"
     
     Set SList = Application.ActiveWorkbook.ActiveSheet
     
@@ -635,3 +631,6 @@ Sub AppendLineOffset(ByRef Trg As String, ByRef newString As String)
     Append Trg, "  "
     AppendLine Trg, newString
 End Sub
+
+
+

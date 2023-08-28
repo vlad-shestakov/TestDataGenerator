@@ -36,18 +36,18 @@
 
 * [SampleTestData.TestData.xml](SampleTestData.TestData.xml)
 
-**Сгенерированные XML Контракта и Вопросов контракта**
+**Сгенерированные XML Контракта и Объектов контракта**
 
-* [SampleTestData.testclass.contract.xml](SampleTestData.testclass.contract.xml)
+* [SampleTestData.testclass.Contracts.xml](SampleTestData.testclass.Contracts.xml)
 
-* [SampleTestData.testclass.conquests.xml](SampleTestData.testclass.conquests.xml)
+* [SampleTestData.testclass.ContractObjects.xml](SampleTestData.testclass.ContractObjects.xml)
 
 ## Как запустить
 
-* Открыть Excel (Тестировалось на Excel 2019)
 * Склонировать репозиторий в простой пусть (без русских букв и т.п.), например: C:\TestDataGenerator
+* Открыть Excel (Тестировалось на Excel 2019)
 * Открыть файл-теста [SampleTestData.xlsx](SampleTestData.xlsx)
-	* На вкладке *"Options"* раздел *"TransformationOptions"* содержит список *имен файлов-шаблонов XSLT* и соответствующее *выходное расширение файла*.
+	* На вкладке *"Options"* раздел ноастроек -  *"TransformationOptions"* содержит список *имен файлов-шаблонов XSLT*,соответствующее *выходное расширение файла*, имя выходного файла (опционально).
 	* На остальных вкладках Excel *данные для тест-кейсов*, в нашем случае вкладка *"Case1"*. Их может быть несколько
 * Открыть файл пакетной обработки [SampleTestDataLIST.xlsm](SampleTestDataLIST.xlsm)
 <br>Здесь перечисляются файлы для обработки
@@ -65,11 +65,12 @@
 * В соответствии с указанными настройками в папке проекта появятся файлы:
 
 	* [SampleTestData.TestData.xml](SampleTestData.TestData.xml) - промежуточный файл XML
-	* [SampleTestData.testclass.contract.xml](SampleTestData.testclass.conquests.xml) - Тестовый XML запрос *"Контракт"*
-	* [SampleTestData.testclass.conquests.xml](SampleTestData.testclass.conquests.xml) - Тестовый XML запрос *"Вопросы контракта"*
+	* [SampleTestData.testclass.Contracts.xml](SampleTestData.testclass.Contracts.xml) - Тестовый XML запрос *"Контракт"*
+	* [SampleTestData.testclass.ContractObjects.xml](SampleTestData.testclass.ContractObjects.xml) - Тестовый XML запрос *"Объекты контракта"*
 
 
 ##  Статьи по XSLT и утилиты
 
+* *[Справочник XSLT 1.0](https://xsltdev.ru/xslt/)*
 * *[XML и XSLT в примерах для начинающих](http://citforum.ru/internet/xmlxslt/xmlxslt.shtml)*
-* *[Online XSL Transformer](https://www.freeformatter.com/xsl-transformer.html)*
+* *[Online XSL Transformer (Тестирование XSLT преобразований](https://www.freeformatter.com/xsl-transformer.html)*
