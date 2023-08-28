@@ -2,12 +2,13 @@ TestData_to_DMCTestSQL.xsl Default XSLT file
 DataGenerator.bas VBA Script for convert
 SampleTestDataLIST.xlsm LIST of some tests with VBA project
 SampleTestData.xlsx Example test
-TestData_to_DCB_CreateCntQuestsXML.xsl Create DCB Contract XSLT
-TestData_to_DCB_CreateContractXML.xsl Create DCB Contract Quests XSLT
+TestData_to_ContractObjects.xsl Create Contract XSLT
+TestData_to_Contracts.xsl Create Contract Objects XSLT
 README.md Readme of TestDataGenerator
-SampleTestData.testclass.contract.xml Result. XML test file for create contract
-SampleTestData.testclass.conquests.xml Result. XML test file for contract quests
+SampleTestData.testclass.Contracts.xml Result. XML test file for create contract
+SampleTestData.testclass.ContractObjects.xml Result. XML test file for contract quests
 __backup-results.bat Script for Backup Test Case Results to RES folder
 __delete-results.bat Script for Delete Test Case Results
 __restore-results.bat Script for Restore Test Case Results from RES folder
 SampleTestData.TestData.xml Result. Intermediate XML data
+LICENSE License doc

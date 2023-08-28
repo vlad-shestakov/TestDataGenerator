@@ -1,0 +1,45 @@
+<?xml version="1.0"?>
+<GetContractObjectsByIDRequestsResponse xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+	<GetContractObjectsByIDResult>
+		<Objects>
+			<ContractObjects>
+				<ContractObject>
+					<GeneralBlock>
+						<RequestNumber>1005006001</RequestNumber>
+						<ActualDocNumber>78 19 335514</ActualDocNumber>
+						<BirthDate>01.01.1980</BirthDate>
+						<ObjectName>ЗаемщикОдин Иван Иванович</ObjectName>
+						<GenderCode>Male</GenderCode>
+						<InsPercent>70</InsPercent>
+						<RoleType>Заемщик</RoleType>
+					</GeneralBlock>
+					<InfoBlock>
+						<IsSmokingNow>true</IsSmokingNow>
+						<SmokingPeriod>5</SmokingPeriod>
+					</InfoBlock>
+					<WorkplaceBlock>
+						<JobTitle>Продавец-кассир</JobTitle>
+					</WorkplaceBlock>
+				</ContractObject>
+				<ContractObject>
+					<GeneralBlock>
+						<RequestNumber>1005006001</RequestNumber>
+						<ActualDocNumber>99 99 335514</ActualDocNumber>
+						<BirthDate>01.01.2000</BirthDate>
+						<ObjectName>СозаемщикОдин Петр Петрович</ObjectName>
+						<GenderCode>Male</GenderCode>
+						<InsPercent>30</InsPercent>
+						<RoleType>Созаемщик</RoleType>
+					</GeneralBlock>
+					<InfoBlock>
+						<IsSmokingNow>false</IsSmokingNow>
+						<SmokingPeriod i:nil="true"/>
+					</InfoBlock>
+					<WorkplaceBlock>
+						<JobTitle>Аналитик</JobTitle>
+					</WorkplaceBlock>
+				</ContractObject>
+			</ContractObjects>
+		</Objects>
+	</GetContractObjectsByIDResult>
+</GetContractObjectsByIDRequestsResponse>

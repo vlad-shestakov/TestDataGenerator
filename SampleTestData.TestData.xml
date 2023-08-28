@@ -3,45 +3,58 @@
 	<source-info>
 		<DatasetName>SampleTestData</DatasetName>
 		<FileName><![CDATA[D:\R_STUDIO\PRG\VBA_projects\TestDataGenerator\SampleTestData.xlsx]]></FileName>
-		<GeneratedAt>2023-08-24 05:10:56</GeneratedAt>
+		<GeneratedAt>2023-08-29 01:40:41</GeneratedAt>
 	</source-info>
 	<options>
-		<ouput_file_extenstion>.testclass.sql</ouput_file_extenstion>
-		<stylesheet_name>TestData_to_DMCTestSQL.xsl</stylesheet_name>
+		<ouput_file_extenstion>.testclass.ContractsTestData.xml</ouput_file_extenstion>
+		<stylesheet_name>CNT_TestData_to_Contracts.xsl</stylesheet_name>
 	</options>
 	<data ref='Case1'>
 		<Name>Sample data for test preparation</Name>
 		<Description>This is a simple test of data preparation for the test scripts</Description>
-		<MasterRecord type='Type1'>
+		<Contract type='Type1'>
 			<columns>
 				<column>
 					<type>Field</type>
-					<name>TechName1</name>
-					<caption>Business Name 1</caption>
+					<name>RequestNumber</name>
+					<caption>App Number</caption>
 				</column>
 				<column>
 					<type>Field</type>
-					<name>TechName2</name>
-					<caption>Business Name 2</caption>
+					<name>CreditId</name>
+					<caption>GUID Заявки</caption>
 				</column>
 				<column>
 					<type>Field</type>
-					<name>TechName3</name>
-					<caption>Business Name 3</caption>
+					<name>CreditAmount</name>
+					<caption>Кредит</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>State</name>
+					<caption>Статус заявки</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>CreditPercent</name>
+					<caption>ПрцКредита</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>CreditTerm</name>
+					<caption>МесКредита</caption>
 				</column>
 			</columns>
 			<row id='Type1_1'>
-				<Field name='TechName1'>A</Field>
-				<Field name='TechName2'>123</Field>
-				<Field name='TechName3'>01.01.2016</Field>
+				<Field name='RequestNumber'>1005006001</Field>
+				<Field name='CreditId'>a31ede1b-ef6e-ed11-84d3-005056bf5af5</Field>
+				<Field name='CreditAmount'>2000000.00</Field>
+				<Field name='State'>NEW</Field>
+				<Field name='CreditPercent'>13.2300000000</Field>
+				<Field name='CreditTerm'>48</Field>
 			</row>
-			<row id='Type1_2'>
-				<Field name='TechName1'>B</Field>
-				<Field name='TechName2'>456</Field>
-				<Field name='TechName3'>01.01.2016</Field>
-			</row>
-		</MasterRecord>
-		<StudyResult type='Z1'>
+		</Contract>
+		<ContractObject type='Qest1'>
 			<columns>
 				<column>
 					<type>Field</type>
@@ -50,37 +63,69 @@
 				</column>
 				<column>
 					<type>Field</type>
-					<name>ResultDate</name>
-					<caption>Study date</caption>
+					<name>ObjectId</name>
+					<caption>Object Id</caption>
 				</column>
 				<column>
-					<type>OtherType</type>
-					<name>REVIEW_RESULT</name>
-					<caption>Review Result</caption>
+					<type>Field</type>
+					<name>ObjectName</name>
+					<caption>Object  FIO</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>Role</name>
+					<caption>Debtor Role</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>InsPercent</name>
+					<caption>Доля</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>BirthDate</name>
+					<caption>BirthDate</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>GenderCode</name>
+					<caption>GenderCode</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>ActualDocNumber</name>
+					<caption>НомерПаспорта</caption>
+				</column>
+				<column>
+					<type>Field</type>
+					<name>JobTitle</name>
+					<caption>JobTitle</caption>
 				</column>
 			</columns>
-			<row id='Z1_1'>
+			<row id='Qest1_1'>
 				<Field name='REF_MasterRecord'>Type1_1</Field>
-				<Field name='ResultDate'>04.01.2016</Field>
-				<OtherType name='REVIEW_RESULT'>A</OtherType>
+				<Field name='ObjectId'>1005001</Field>
+				<Field name='ObjectName'>ЗаемщикОдин Иван Иванович</Field>
+				<Field name='Role'>Заемщик</Field>
+				<Field name='InsPercent'>70</Field>
+				<Field name='BirthDate'>01.01.1980</Field>
+				<Field name='GenderCode'>Male</Field>
+				<Field name='ActualDocNumber'>78 19 335514</Field>
+				<Field name='JobTitle'>Продавец-кассир</Field>
 			</row>
-			<row id='Z1_2'>
-				<Field name='REF_MasterRecord'>Type1_1</Field>
-				<Field name='ResultDate'>21.01.2016</Field>
-				<OtherType name='REVIEW_RESULT'>B</OtherType>
-			</row>
-			<row id='Z1_3'>
+			<row id='Qest1_2'>
 				<Field name='REF_MasterRecord'>Type1_2</Field>
-				<Field name='ResultDate'>06.01.2016</Field>
-				<OtherType name='REVIEW_RESULT'>C</OtherType>
+				<Field name='ObjectId'>1005002</Field>
+				<Field name='ObjectName'>СозаемщикОдин Петр Петрович</Field>
+				<Field name='Role'>Созаемщик</Field>
+				<Field name='InsPercent'>30</Field>
+				<Field name='BirthDate'>01.01.2000</Field>
+				<Field name='GenderCode'>Male</Field>
+				<Field name='ActualDocNumber'>99 99 335514</Field>
+				<Field name='JobTitle'>Аналитик</Field>
 			</row>
-			<row id='Z1_4'>
-				<Field name='REF_MasterRecord'>Type1_2</Field>
-				<Field name='ResultDate'>11.01.2016</Field>
-				<OtherType name='REVIEW_RESULT'>B</OtherType>
-			</row>
-		</StudyResult>
-		<StudyResult type='Z2'>
+		</ContractObject>
+		<InfoBlock type='InfoObj1'>
 			<columns>
 				<column>
 					<type>Field</type>
@@ -89,52 +134,27 @@
 				</column>
 				<column>
 					<type>Field</type>
-					<name>ResultDate</name>
-					<caption>Evaluation date</caption>
-				</column>
-				<column>
-					<type>OtherType</type>
-					<name>RESPONSE_RATE</name>
-					<caption>Response Rate</caption>
-				</column>
-				<column>
-					<type>OtherType</type>
-					<name>TEST_RESULTS</name>
-					<caption>Tests</caption>
-				</column>
-			</columns>
-			<row id='Z2_1'>
-				<Field name='REF_MasterRecord'>Type1_2</Field>
-				<Field name='ResultDate'>11.01.2016</Field>
-				<OtherType name='RESPONSE_RATE'>High</OtherType>
-				<OtherType name='TEST_RESULTS'>Passed</OtherType>
-			</row>
-		</StudyResult>
-		<StudyResult type='Z3'>
-			<columns>
-				<column>
-					<type>Field</type>
-					<name>REF_MasterRecord</name>
-					<caption>Master Record #</caption>
+					<name>IsSmokingNow</name>
+					<caption>IsSmokingNow</caption>
 				</column>
 				<column>
 					<type>Field</type>
-					<name>ResultDate</name>
-					<caption>Testing Date</caption>
-				</column>
-				<column>
-					<type>OtherType</type>
-					<name>STUDY_RESULT</name>
-					<caption>Result</caption>
+					<name>SmokingPeriod</name>
+					<caption>SmokingPeriod</caption>
 				</column>
 			</columns>
-			<row id='Z3_1'>
-				<Field name='REF_MasterRecord'>Type1_1</Field>
-				<Field name='ResultDate'>21.01.2016</Field>
-				<OtherType name='STUDY_RESULT'>OK</OtherType>
+			<row id='InfoObj1_1'>
+				<Field name='REF_MasterRecord'>Qest1_1</Field>
+				<Field name='IsSmokingNow'>true</Field>
+				<Field name='SmokingPeriod'>5</Field>
 			</row>
-		</StudyResult>
-		<ExpectedResult>
+			<row id='InfoObj1_2'>
+				<Field name='REF_MasterRecord'>Qest1_2</Field>
+				<Field name='IsSmokingNow'>false</Field>
+				<Field name='SmokingPeriod'>nil</Field>
+			</row>
+		</InfoBlock>
+		<Results type='Res1'>
 			<columns>
 				<column>
 					<type>Field</type>
@@ -157,31 +177,31 @@
 					<caption>Test Name*</caption>
 				</column>
 			</columns>
-			<row id='ExpectedResult_1'>
+			<row id='Res1_1'>
 				<Field name='REF_MasterRecord'>Type1_1</Field>
 				<Field name='Advice'>WILL_ACCEPT_OFFER1</Field>
 				<Field name='FinalResult'>HIGH</Field>
 				<Comment name='TestName'>Test_1_1</Comment>
 			</row>
-			<row id='ExpectedResult_2'>
+			<row id='Res1_2'>
 				<Field name='REF_MasterRecord'>Type1_1</Field>
 				<Field name='Advice'>WILL_ACCEPT_OFFER2</Field>
 				<Field name='FinalResult'>MEDIUM</Field>
 				<Comment name='TestName'>Test_1_2</Comment>
 			</row>
-			<row id='ExpectedResult_3'>
+			<row id='Res1_3'>
 				<Field name='REF_MasterRecord'>Type1_2</Field>
 				<Field name='Advice'>WILL_ACCEPT_OFFER1</Field>
 				<Field name='FinalResult'>LOW</Field>
 				<Comment name='TestName'>Test_2_1</Comment>
 			</row>
-			<row id='ExpectedResult_4'>
+			<row id='Res1_4'>
 				<Field name='REF_MasterRecord'>Type1_2</Field>
 				<Field name='Advice'>WILL_ACCEPT_OFFER2</Field>
 				<Field name='FinalResult'>HIGH</Field>
 				<Comment name='TestName'>Test_2_2</Comment>
 			</row>
-		</ExpectedResult>
+		</Results>
 	</data>
 </dataset>
 

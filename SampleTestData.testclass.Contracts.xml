@@ -1,0 +1,29 @@
+<?xml version="1.0"?>
+<GetAllContractsRequestsResponse>
+	<GetAllContractsRequestsResult xmlns:i="http://www.w3.org/2001/XMLSchema-instance">
+		<Contracts>
+			<Contract>
+				<Number>1005006001</Number>
+				<CreditId>a31ede1b-ef6e-ed11-84d3-005056bf5af5</CreditId>
+				<CreditAmount>2000000.00</CreditAmount>
+				<CreditPercent>13.2300000000</CreditPercent>
+				<CreditTerm>48</CreditTerm>
+				<ContractObjects>
+					<ContractObject>
+						<ObjectId>1005001</ObjectId>
+						<InsPercent>70</InsPercent>
+						<Name>ЗаемщикОдин Иван Иванович</Name>
+						<Role>Заемщик</Role>
+					</ContractObject>
+					<ContractObject>
+						<ObjectId>1005002</ObjectId>
+						<InsPercent>30</InsPercent>
+						<Name>СозаемщикОдин Петр Петрович</Name>
+						<Role>Созаемщик</Role>
+					</ContractObject>
+				</ContractObjects>
+				<State>NEW</State>
+			</Contract>
+		</Contracts>
+	</GetAllContractsRequestsResult>
+</GetAllContractsRequestsResponse>
