@@ -10,6 +10,9 @@
 
 * GitHub - [TestDataGenerator](https://github.com/serhit/TestDataGenerator)
 
+![](resources/screenshot.png)
+
+
 **Данные для тест-кейсов**
 
 Собираются в Excel
