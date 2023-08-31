@@ -19,9 +19,26 @@ Const DEFAULT_FILE_EXTENSION = ".testclass.sql"
 
 Const DEFAULT_DATA_EXTENSION = ".TestData.xml"
 
-Const IS_EXPORT_DATA_EXTTRACT = "1" ' Flag to export intermediate data.xml files (1/0)
+' Converts XML to UTF-8 without BOM / otherwise Windows-1251
+Const C_ENCODING_WIN = "WIN"
+Const C_ENCODING_UTF8 = "UTF8"
+Const DEFAULT_ENCODING = C_ENCODING_UTF8
+
+' Pretty print output XMLs (1/0)
+Const C_FORMAT_PRETTYPRINT = "PP"
+Const C_FORMAT_PLAIN = "PLAIN"
+Const DEFAULT_FORMAT = C_FORMAT_PRETTYPRINT
+
+
+Const IS_EXPORT_DATA_EXTRACT = "1" ' Flag to export intermediate data.xml files (1/0)
+
+' Режим отладки - показывает больше данных при завершени операции
+Const IS_DEBUG_MODE = "0" ' Debug mode - more info (1/0)
 
 Const MAX_BLANK_LINES_BETWEEN_BLOCKS = 2
+
+
+Dim FilesList As String
 
 '-------------------------------------------------------------------------------
 Sub MakeDataExtract()
@@ -32,7 +49,7 @@ Sub MakeDataExtract()
     
     Set WB = Application.ActiveWorkbook
     
-    Data = "<?xml version='1.0' encoding='UTF-8'?>"
+    Data = "<?xml version='1.0' encoding='windows-1251'?>"
     
     AppendLine Data, ""
     AppendLine Data, GetWorkbookData(WB)
@@ -43,9 +60,7 @@ Sub MakeDataExtract()
     
     ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.TestData.xml
     
-    Open ExportFileName For Output As #1
-    Print #1, Data
-    Close #1
+    SaveToXML ExportFileName, Data, C_ENCODING_WIN 'Save in Win-1251
     
     'MsgBox "done save - " + ExportFileName '----------
     
@@ -100,13 +115,14 @@ Sub MakeDataExtractAndTransformOne()
     On Error GoTo 0
     
     
-    Data = "<?xml version='1.0' encoding='UTF-8'?>"
+    'Data = "<?xml version='1.0' encoding='UTF-8'?>"
+    Data = "<?xml version='1.0' encoding='windows-1251'?>"
     
     AppendLine Data, ""
     AppendLine Data, GetWorkbookData(WB)
     
     '---------------------------------------------------------------------------
-    If IS_EXPORT_DATA_EXTTRACT = "1" Then
+    If IS_EXPORT_DATA_EXTRACT = "1" Then
     
         ExportFileName = WB.FullName
         
@@ -114,9 +130,7 @@ Sub MakeDataExtractAndTransformOne()
         
         ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.TestData.xml
         
-        Open ExportFileName For Output As #1
-        Print #1, Data
-        Close #1
+        SaveToXML ExportFileName, Data, C_ENCODING_WIN 'Save in Win-1251
         
         'MsgBox "done save - " + ExportFileName '----------
         
@@ -141,9 +155,13 @@ Sub MakeDataExtractAndTransformOne()
             
             ExportFileName = ExportFileName + FileExtension
             
-            Open ExportFileName For Output As #1
-            Print #1, Data
-            Close #1
+    
+            If DEFAULT_FORMAT = C_FORMAT_PRETTYPRINT Then ' Pretty print output XMLs
+                Data = PrettyPrintXml(Data)
+            End If
+            
+            'Save in DEF format
+            SaveToXML ExportFileName, Data, DEFAULT_ENCODING
             
             'MsgBox "done save - " + ExportFileName '----------
     
@@ -163,9 +181,14 @@ Sub MakeDataExtractAndTransform()
     Dim StylesheetName As String
     Dim FileExtension As String
     Dim FileName As String
+    Dim sEncoding As String
+    Dim sFormat As String
     Dim N As name
     Dim R As Range
     Dim LO As ListObject
+    
+    
+    FilesList = ""
             
     'MsgBox "MakeDataExtractAndTransform" '----------
     
@@ -175,28 +198,25 @@ Sub MakeDataExtractAndTransform()
     
     On Error Resume Next
     
+    'Find in excel NamedTable - TransformationOptions
     Set LO = Opts.ListObjects("TransformationOptions")
-    
-    '---------------------------------------------------------------------------
-    'If Not (LO Is Nothing) Then
-    '    MsgBox "NOT LO Is Nothing"
-    'Else
-    '    MsgBox "LO Is Nothing"
-    'End If
-    '---------------------------------------------------------------------------
-    
     
     On Error GoTo 0
    
-    If Not (LO Is Nothing) Then
-        Data = "<?xml version='1.0' encoding='UTF-8'?>"
+    'If NOT FOUND
+    If (LO Is Nothing) Then
+        'Convert One File
+        MakeDataExtractAndTransformOne
+    Else
+        'Use Table TransformationOptions
+        Data = "<?xml version='1.0' encoding='windows-1251'?>"
         
         AppendLine Data, ""
         AppendLine Data, GetWorkbookData(WB)
             
             
         '---------------------------------------------------------------------------
-        If IS_EXPORT_DATA_EXTTRACT = "1" Then
+        If IS_EXPORT_DATA_EXTRACT = "1" Then
         
             ExportFileName = WB.FullName
             
@@ -204,9 +224,7 @@ Sub MakeDataExtractAndTransform()
             
             ExportFileName = ExportFileName + DEFAULT_DATA_EXTENSION    '.data.xml
             
-            Open ExportFileName For Output As #1
-            Print #1, Data
-            Close #1
+            SaveToXML ExportFileName, Data, C_ENCODING_WIN 'Save in Win-1251
             
             'MsgBox "done save - " + ExportFileName '----------
             
@@ -220,17 +238,16 @@ Sub MakeDataExtractAndTransform()
             
             xsltPath = Application.ThisWorkbook.Path
             
-            
-            'MsgBox "xsltPath - " + xsltPath '----------
-            'MsgBox "LO.ListRows.Count - " + Str(LO.ListRows.Count) '----------
-            
             For idx = 1 To LO.ListRows.Count
                 
                 'MsgBox "idx - " + Str(idx) '----------
+                
+                'Reading table - TransformationOptions
                 StylesheetName = LO.ListRows(idx).Range(1) 'Name of XSLT Template
                 FileExtension = LO.ListRows(idx).Range(2) 'Output file extention
-				
-                FileName = "" '(Optional) Output Export Path and FileName
+                
+                '(Optional) Output Export Path and FileName
+                FileName = ""
                 If Not (LO.ListRows(idx).Range(3) Is Nothing) Then
                    ssName = LO.ListRows(idx).Range(3).value
                    If ssName <> "" Then
@@ -238,54 +255,152 @@ Sub MakeDataExtractAndTransform()
                    End If
                 End If
                 
-                If xslt.Load(xsltPath + "/" + StylesheetName) Then
+                '(Optional) Pretty print Export
+                sFormat = DEFAULT_FORMAT
+                If Not (LO.ListRows(idx).Range(4) Is Nothing) Then
+                   ssName = LO.ListRows(idx).Range(4).value
+                   If (ssName = C_FORMAT_PRETTYPRINT) Then 'PP
+                       sFormat = C_FORMAT_PRETTYPRINT
+                   Else
+                       sFormat = C_FORMAT_PLAIN
+                   End If
+                End If
                 
-                    Data = xml.transformNode(xslt)
+                '(Optional) Convert to UTF-8
+                sEncoding = DEFAULT_ENCODING
+                If Not (LO.ListRows(idx).Range(5) Is Nothing) Then
+                   ssName = LO.ListRows(idx).Range(5).value
+                   If (ssName = C_ENCODING_WIN) Then 'WIN
+                       sEncoding = C_ENCODING_WIN
+                   Else
+                       sEncoding = C_ENCODING_UTF8
+                   End If
+                End If
+                
+                If xslt.Load(xsltPath + "\" + StylesheetName) Then
+                
                     
-                    'MsgBox "do transformNode - " + xsltPath + "/" + StylesheetName '----------
+                    'MsgBox "do transformNode - " + xsltPath + "\" + StylesheetName '----------
                     
                     ExportFileName = WB.FullName
                         
-						
                     If FileName = "" Then
                         
                         'Replace File Extention
-                        
                         ExportFileName = Mid(ExportFileName, 1, InStr(ExportFileName, ".") - 1)
-                        
                         ExportFileName = ExportFileName + FileExtension
                         
                     Else
                         
                         'Replace File Name
-                        
                         ExportFileName = Mid(ExportFileName, 1, InStrRev(ExportFileName, "\"))
                         ExportFileName = ExportFileName + FileName
                         
                     End If
                     
+                    
+                    Data = xml.transformNode(xslt)
+                    
                     'MsgBox "ExportFileName - " + ExportFileName '----------
                     
-                    Open ExportFileName For Output As #1
-                    Print #1, Data
-                    Close #1
+                    If sFormat = C_FORMAT_PRETTYPRINT Then ' Pretty print output XMLs
+                        Data = PrettyPrintXml(Data)
+                    End If
+                                
+                    SaveToXML ExportFileName, Data, sEncoding
+                    
+                    AppendLine FilesList, " - " + ExportFileName
                     
                     'MsgBox "done save - " + ExportFileName '----------
                 
                 End If
             Next idx
         End If
-    Else
-        MakeDataExtractAndTransformOne
     End If
 
 End Sub
+
+
+'-------------------------------------------------------------------------------
+Private Sub SaveToXML(inExportFileName As Variant, inData As Variant, inIS_CONVERT_XML_TO_UTF8 As Variant)
+
+    If inIS_CONVERT_XML_TO_UTF8 = C_ENCODING_UTF8 Then
+        'Converts XML to UTF-8 without BOM
+        'sEncoding Pretty print output XMLs (1/0)
+            
+        '-----------------------------------
+        'Способ сохранения в кодировке UTF-8 Without!!! BOM
+        'Option Explicit
+
+        Const adSaveCreateNotExist = 1
+        Const adSaveCreateOverWrite = 2
+        Const adTypeBinary = 1
+        Const adTypeText = 2
+        
+        Dim objStreamUTF8: Set objStreamUTF8 = CreateObject("ADODB.Stream")
+        Dim objStreamUTF8NoBOM: Set objStreamUTF8NoBOM = CreateObject("ADODB.Stream")
+        
+        With objStreamUTF8
+          .Charset = "UTF-8"
+          .Open
+          .WriteText inData
+          .Position = 0
+          .SaveToFile inExportFileName, adSaveCreateOverWrite
+          .Type = adTypeText
+          .Position = 3
+        End With
+        
+        With objStreamUTF8NoBOM
+          .Type = adTypeBinary
+          .Open
+          objStreamUTF8.CopyTo objStreamUTF8NoBOM
+          .SaveToFile inExportFileName, adSaveCreateOverWrite
+        End With
+                    
+        objStreamUTF8.Close
+        objStreamUTF8NoBOM.Close
+    Else
+            
+        'Старый способ сохранения (Выпускал кодировку Windows-1251
+        Open inExportFileName For Output As #1
+        Print #1, inData
+        Close #1
+        
+    End If
+End Sub
+
+'-------------------------------------------------------------------------------
+Private Function PrettyPrintXml(dom As Variant) As String 'из xml-строки делает форматированный xml
+
+   Dim writer As New MXXMLWriter60
+
+   With writer
+       .omitXMLDeclaration = False
+       .indent = True
+       .byteOrderMark = False
+       .standalone = False
+   End With
+
+   Dim reader As New SAXXMLReader60
+
+   Set reader.contentHandler = writer
+   reader.Parse dom
+
+   PrettyPrintXml = writer.output
+   'PrettyPrintXml = Replace(PrettyPrintXml, "encoding=""UTF-16""", "encoding=""UTF-8""") ' windows-1251
+   PrettyPrintXml = Replace(PrettyPrintXml, "encoding=""UTF-16""", "") ' windows-1251
+   PrettyPrintXml = Replace(PrettyPrintXml, " standalone=""no""", "")
+
+End Function
 
 '-------------------------------------------------------------------------------
 Sub FileList_MakeDataExtractAndTransform()
     Dim WB As Workbook
     Dim SList As Worksheet
     Dim aName As String
+    Dim MsgStr As String
+    
+    FilesList = ""
     
     
     Set SList = Application.ActiveWorkbook.ActiveSheet
@@ -313,7 +428,13 @@ Sub FileList_MakeDataExtractAndTransform()
         row = row + 1
     Wend
     
-    MsgBox Str(cnt) + " out of " + Str(cntTotal) + " tests has been processed"
+    MsgStr = Str(cnt) + " out of " + Str(cntTotal) + " tests has been processed"
+    
+    If IS_DEBUG_MODE = "1" Then
+        AppendLine MsgStr, FilesList
+    End If
+    
+    MsgBox MsgStr
 End Sub
 
 
@@ -631,6 +752,4 @@ Sub AppendLineOffset(ByRef Trg As String, ByRef newString As String)
     Append Trg, "  "
     AppendLine Trg, newString
 End Sub
-
-
 
